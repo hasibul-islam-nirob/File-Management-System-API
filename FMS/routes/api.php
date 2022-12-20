@@ -25,7 +25,8 @@ Route::get('get_last_image',[FileController::class, 'getLastImage']);
 
 Route::get('get_limit_image_desc',[FileController::class, 'getLimitImageDesc']);
 Route::get('get_limit_image_asc',[FileController::class, 'getLimitImageAsc']);
-Route::get('get_image_between',[FileController::class, 'getImageBetween']);
+
+Route::get('get_image_start_to_end',[FileController::class, 'getImagePositionStartToEnd']);
 
 Route::post('create',[FileController::class, 'create']);
 Route::post('update',[FileController::class, 'update']);

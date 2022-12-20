@@ -10,7 +10,7 @@ class FileController extends Controller
 {
 
 
-    function getImageBetween(Request $request){
+    function getImagePositionStartToEnd(Request $request){
         $numMin = $request->input('startPos');
         $numMax = $request->input('endPos');
 

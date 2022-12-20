@@ -10,12 +10,66 @@ class FileController extends Controller
 {
 
 
+    function getImageBetween(Request $request){
+        $numMin = $request->input('startPos');
+        $numMax = $request->input('endPos');
+
+        $result = FileModel::where('id','>=' ,$numMin)->where('id','<=',$numMax)->get();
+        return response()->json(['images' => $result],200);
+    }
+
+    function getLimitImageAsc(Request $request){
+        $number = $request->input('number');
+        $result = FileModel::orderBy('id','asc')->limit($number)->get();
+        return response()->json(['images' => $result],200);
+    }
+
+    function getLimitImageDesc(Request $request){
+        $number = $request->input('number');
+        $result = FileModel::orderBy('id','desc')->limit($number)->get();
+        return response()->json(['images' => $result],200);
+    }
+
+    function getFirstImage(){
+        $result = FileModel::orderBy('id','asc')->first();
+        return response()->json(['images' => $result],200);
+    }
+
+    function getLastImage(){
+        $result = FileModel::orderBy('id','desc')->first();
+        return response()->json(['images' => $result],200);
+    }
+
     function allImages(){
         $result = FileModel::orderBy('id','desc')->get();
         return response()->json(['images' => $result],200);
     }
 
+    function delete(Request $request){
+        $id = $request->input('id');
+        $getFile = FileModel::where('id',$id)->first();
+        $oldFileName = $getFile['file_name'];
 
+        if ( (Storage::disk('public')->exists($oldFileName)) ) {
+
+            Storage::disk('public')->delete($oldFileName);
+            $result = FileModel::where('id',$id)->delete();
+            if ($result == true) {
+                return 1;
+            } else {
+                return 0;
+            }
+
+        }else{
+            $result = FileModel::where('id',$id)->delete();
+            if ($result == true) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+    }
 
     function create(Request $request){
 
@@ -46,8 +100,6 @@ class FileController extends Controller
         }
 
     }
-
-
 
     function update(Request $request){
         $id = $request->input('id');

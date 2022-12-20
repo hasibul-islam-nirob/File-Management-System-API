@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('create',[FileController::class, 'create']);
 Route::get('allImages',[FileController::class, 'allImages']);
+Route::post('update',[FileController::class, 'update']);

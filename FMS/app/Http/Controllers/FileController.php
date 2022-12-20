@@ -51,11 +51,11 @@ class FileController extends Controller
 
     function update(Request $request){
         $id = $request->input('id');
+        $newFile = $request->file('fileName');
+
         $getFile = FileModel::where('id',$id)->first();
         $oldFileUrl = $getFile['file_url'];
         $oldFileName = $getFile['file_name'];
-
-        $newFile = $request->file('fileName');
 
         date_default_timezone_set('Asia/Dhaka');
         $date = date("d-m-Y");

@@ -82,8 +82,17 @@ class FileController extends Controller
 
     function create(Request $request){
 
+        $fileExt = $request->file('fileName')->getSize();
+        if($fileExt > 1024 && $fileExt < 1048576){
+            return $fileSize = round($fileExt / (1024), 2);
+
+        }else if($fileExt > 1048576 && $fileExt < 1073741824){
+            return $fileSize = round($fileExt / (1024 * 1024), 2);
+        }
+
+
         $fileExt = $request->file('fileName')->getClientOriginalExtension();
-        if( $fileExt=='js'){
+        if( $fileExt=='js' || $fileExt=='java'){
             return 0;
         }else{
             $path = $request->file('fileName')->store('public');
@@ -111,41 +120,61 @@ class FileController extends Controller
     }
 
     function update(Request $request){
-        $id = $request->input('id');
-        $newFile = $request->file('fileName');
 
-        $getFile = FileModel::where('id',$id)->first();
-        $oldFileUrl = $getFile['file_url'];
-        $oldFileName = $getFile['file_name'];
+        $fileExt = $request->file('fileName')->getClientOriginalExtension();
+        if( $fileExt=='js' || $fileExt=='java'){
+            return 0;
 
-        date_default_timezone_set('Asia/Dhaka');
-        $date = date("d-m-Y");
-        $time = date("h:i:sa");
+        }else{
+            $id = $request->input('id');
+            $newFile = $request->file('fileName');
 
-        if ($newFile != null) {
+            $getFile = FileModel::where('id',$id)->first();
+            $oldFileUrl = $getFile['file_url'];
+            $oldFileName = $getFile['file_name'];
 
-            if (Storage::disk('public')->exists($oldFileName)) {
-                Storage::disk('public')->delete($oldFileName);
+            date_default_timezone_set('Asia/Dhaka');
+            $date = date("d-m-Y");
+            $time = date("h:i:sa");
 
-                $host = "http://" . $_SERVER['HTTP_HOST'];
-                $path = $request->file('fileName')->store('public');
-                $fileName = (explode("/", $path))[1];
-                $location = $host . "/storage/" . $fileName;
+            if ($newFile != null) {
 
-                $result = FileModel::where('id', $id)->update([
-                    'file_url'=>$location,
-                    'file_name'=>$fileName,
-                    'update_time'=>$time,
-                    'update_date'=>$date,
-                ]);
-                if ($result == true) {
-                    return 1;
+                if (Storage::disk('public')->exists($oldFileName)) {
+                    Storage::disk('public')->delete($oldFileName);
+
+                    $host = "http://" . $_SERVER['HTTP_HOST'];
+                    $path = $request->file('fileName')->store('public');
+                    $fileName = (explode("/", $path))[1];
+                    $location = $host . "/storage/" . $fileName;
+
+                    $result = FileModel::where('id', $id)->update([
+                        'file_url'=>$location,
+                        'file_name'=>$fileName,
+                        'update_time'=>$time,
+                        'update_date'=>$date,
+                    ]);
+                    if ($result == true) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+
                 } else {
-                    return 0;
+
+                    $result = FileModel::where('id', $id)->update([
+                        'file_url'=>$oldFileUrl,
+                        'file_name'=>$oldFileName,
+                        'update_time'=>$time,
+                        'update_date'=>$date,
+                    ]);
+                    if ($result == true) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
                 }
 
             } else {
-
                 $result = FileModel::where('id', $id)->update([
                     'file_url'=>$oldFileUrl,
                     'file_name'=>$oldFileName,
@@ -158,20 +187,8 @@ class FileController extends Controller
                     return 0;
                 }
             }
-
-        } else {
-            $result = FileModel::where('id', $id)->update([
-                'file_url'=>$oldFileUrl,
-                'file_name'=>$oldFileName,
-                'update_time'=>$time,
-                'update_date'=>$date,
-            ]);
-            if ($result == true) {
-                return 1;
-            } else {
-                return 0;
-            }
         }
+
 
     }
 

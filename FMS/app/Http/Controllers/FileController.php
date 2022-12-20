@@ -10,6 +10,15 @@ class FileController extends Controller
 {
 
 
+    function getImageBetween(Request $request){
+        $numMin = $request->input('startPos');
+        $numMax = $request->input('endPos');
+        $order = $request->input('order');
+
+        $result = FileModel::orderBy('id',$order)->whereBetween('id', [$numMin, $numMax])->get();
+        return response()->json(['images' => $result],200);
+    }
+
     function getImagePositionStartToEnd(Request $request){
         $numMin = $request->input('startPos');
         $numMax = $request->input('endPos');

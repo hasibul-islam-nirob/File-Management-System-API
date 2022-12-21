@@ -84,10 +84,10 @@ class FileController extends Controller
 
 //        $fileExt = $request->file('fileName')->getSize();
 //        if($fileExt > 1024 && $fileExt < 1048576){
-//            return $fileSize = round($fileExt / (1024), 2);
+//            return $fileSize = round($fileExt / (1024), 2).' Kb';
 //
 //        }else if($fileExt > 1048576 && $fileExt < 1073741824){
-//            return $fileSize = round($fileExt / (1024 * 1024), 2);
+//            return $fileSize = round($fileExt / (1024 * 1024), 2).' Mb';
 //        }
 
 
